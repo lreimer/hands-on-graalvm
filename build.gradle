@@ -1,0 +1,46 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'groovy'
+}
+
+repositories {
+    jcenter()
+}
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+    implementation 'info.picocli:picocli:3.9.6'
+    runtime 'info.picocli:picocli-codegen:3.9.6'
+    runtime 'jline:jline:2.14.6'
+
+    // Use the latest Groovy version for Spock testing
+    testImplementation 'org.codehaus.groovy:groovy-all:2.5.4'
+
+    // Use the awesome Spock testing and specification framework even with Java
+    testImplementation 'org.spockframework:spock-core:1.2-groovy-2.5'
+    testImplementation 'junit:junit:4.12'
+}
+
+// Define the main class for the application
+mainClassName = 'hands.on.graalvm.HandsOnGraal'
+
+task copyRuntimeLibs(type: Copy) {
+    into "$buildDir/libs"
+    from configurations.runtime
+}
+
+assemble.finalizedBy copyRuntimeLibs
+
+task reflectionConfigGenerator(description: 'Generate reflection config', dependsOn: 'assemble', type: JavaExec) {
+    main = 'picocli.codegen.aot.graalvm.ReflectionConfigGenerator'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['hands.on.graalvm.HandsOnGraal', '--output', 'build/reflect.json']
+}
+
+task graalNativeImage(description: 'Generate native image with GraalVM', dependsOn: 'reflectionConfigGenerator', type: Exec) {
+    workingDir "$buildDir"
+    commandLine 'native-image', '-cp', 'libs/picocli-3.9.6.jar:libs/picocli-codegen-3.9.6.jar:libs/jline-2.14.6.jar:libs/hands-on-graalvm.jar', '-H:ReflectionConfigurationFiles=reflect.json', '-H:+ReportUnsupportedElementsAtRuntime', '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream', '--no-server', 'hands.on.graalvm.HandsOnGraal'
+}
