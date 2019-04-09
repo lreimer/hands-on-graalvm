@@ -30,4 +30,26 @@ slidenumbers: true
 
 ## Build CLIs with _Picocli_ and _GraalVM_
 
--
+- Picocli is a framework to easily build JVM command line apps.
+- Support for ANSI colors, completion, sub commands, annotations and programmatic API.
+- Good support for GraalVM AOT Compilation to Native Images via the `ReflectionConfigGenerator` utility.
+- Native utilities and sidecar containers can now also be build using Java! __Golang is still cool.__
+
+---
+
+## Polyglot Mayhem
+
+- The Graal Polyglot API allows you to embed and use different languages with full bidirectional interop.
+
+```java
+private static void helloR(PolyglotMessage message) {
+    try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+        context.getPolyglotBindings().putMember("message", message);
+        context.eval("R",
+                "message <- import('message');" +
+                "message$invocations <- message$invocations + 1;" +
+                "print(message$text);");
+    }
+}
+```
+- __This is not the same as with the Java Scripting API (defined by JSR 223)!__

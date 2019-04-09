@@ -89,8 +89,20 @@ Hello from Python!
 Called 5 languages in the same JVM. Polyglot Mayhem!
 ```
 
+## More examples
+
+Make sure to checkout the official Graal demo repo with its many examples.
+
+```
+git clone https://github.com/graalvm/graalvm-demos
+cd graalvm-demos/polyglot-javascript-java-r
+./build.sh
+$GRAALVM_HOME/bin/node --polyglot --inspect --jvm server.js
+open http://localhost:3000
+```
+
 Have a look at the class `hands.on.graalvm.PolyglotMayhem` and also the official Graal documentation
-on how to embed and use other languages via the Graal Polyglot API. 
+on how to embed and use other languages via the Graal Polyglot API.
 
 ## References
 
