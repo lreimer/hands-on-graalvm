@@ -28,6 +28,6 @@ slidenumbers: true
 
 ---
 
-## Build CLIs with _Picoli_ and _GraalVM_
+## Build CLIs with _Picocli_ and _GraalVM_
 
 -

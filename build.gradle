@@ -16,6 +16,8 @@ dependencies {
     runtime 'info.picocli:picocli-codegen:3.9.6'
     runtime 'jline:jline:2.14.6'
 
+    testImplementation 'org.graalvm:graal-sdk:1.0.0-rc7'
+
     // Use the latest Groovy version for Spock testing
     testImplementation 'org.codehaus.groovy:groovy-all:2.5.4'
 
@@ -42,5 +44,18 @@ task reflectionConfigGenerator(description: 'Generate reflection config', depend
 
 task graalNativeImage(description: 'Generate native image with GraalVM', dependsOn: 'reflectionConfigGenerator', type: Exec) {
     workingDir "$buildDir"
-    commandLine 'native-image', '-cp', 'libs/picocli-3.9.6.jar:libs/picocli-codegen-3.9.6.jar:libs/jline-2.14.6.jar:libs/hands-on-graalvm.jar', '-H:ReflectionConfigurationFiles=reflect.json', '-H:+ReportUnsupportedElementsAtRuntime', '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream', '--no-server', 'hands.on.graalvm.HandsOnGraal'
+    commandLine = [
+            'native-image',
+            '-cp', 'libs/picocli-3.9.6.jar:libs/picocli-codegen-3.9.6.jar:libs/jline-2.14.6.jar:libs/hands-on-graalvm.jar',
+            '-H:ReflectionConfigurationFiles=reflect.json',
+            '-H:+ReportUnsupportedElementsAtRuntime',
+            '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream',
+            '--no-server',
+            'hands.on.graalvm.HandsOnGraal'
+    ]
+}
+
+task polyglotMayhem(description: 'Run embedded polyglot language example', dependsOn: 'testClasses', type: JavaExec) {
+    main = 'hands.on.graalvm.PolyglotMayhem'
+    classpath = sourceSets.test.runtimeClasspath
 }
