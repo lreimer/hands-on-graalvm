@@ -49,9 +49,10 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
             '-cp', 'libs/picocli-3.9.6.jar:libs/picocli-codegen-3.9.6.jar:libs/jline-2.14.6.jar:libs/hands-on-graalvm.jar',
             '-H:ReflectionConfigurationFiles=reflect.json',
             '-H:+ReportUnsupportedElementsAtRuntime',
-            '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream',
+            '--initialize-at-run-time=org.fusesource.jansi.WindowsAnsiOutputStream',
             '--no-server',
-            'hands.on.graalvm.HandsOnGraal'
+            'hands.on.graalvm.HandsOnGraal',
+            'hands-on-graal'
     ]
 }
 
