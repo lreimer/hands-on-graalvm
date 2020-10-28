@@ -5,6 +5,12 @@
 .gradletasknamecache
 *.iml
 
+.vscode/
+.settings/
+.classpath
+.project
+
 # Ignore Gradle build output directory
-build
-out
+build/
+out/
+bin/
