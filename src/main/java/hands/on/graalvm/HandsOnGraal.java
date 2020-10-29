@@ -13,6 +13,8 @@ class HandsOnGraal implements Runnable {
 
     private static final Logger LOGGER = Logger.getLogger(HandsOnGraal.class.getName());
 
+    // see https://picocli.info/#_options_and_parameters
+
     @Parameters(arity = "0..1", description = "The message to echo.")
     private String message;
 
