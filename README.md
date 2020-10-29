@@ -11,8 +11,8 @@ done, make sure to install R, Python and Ruby using the Graal updater.
 ```
 # use Jabba to install GraalVM
 jabba remote-ls
-jabba install graalvm@1.0.0-14
-jabba use graalvm@1.0.0-14
+jabba install graalvm-ce-java8@20.1.0
+jabba use graalvm-ce-java8@20.1.0
 
 export GRAALVM_HOME=$JAVA_HOME
 
@@ -31,9 +31,11 @@ In the Gradle build file, the following 3 dependencies are required.
 
 ```groovy
 dependencies {
-  implementation 'info.picocli:picocli:3.9.6'
-  runtime 'info.picocli:picocli-codegen:3.9.6'
-  runtime 'jline:jline:2.14.6'
+    implementation 'info.picocli:picocli:4.5.2'
+    implementation 'info.picocli:picocli-jansi-graalvm:1.2.0'
+
+    runtime 'info.picocli:picocli-codegen:4.1.4'
+    runtime 'info.picocli:picocli-shell-jline3:4.1.4'
 }
 ```
 
@@ -57,7 +59,7 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
     workingDir "$buildDir"
     commandLine = [
             'native-image',
-            '-cp', 'libs/picocli-3.9.6.jar:libs/picocli-codegen-3.9.6.jar:libs/jline-2.14.6.jar:libs/hands-on-graalvm.jar',
+            '-cp', getClasspath(),
             '-H:ReflectionConfigurationFiles=reflect.json',
             '-H:+ReportUnsupportedElementsAtRuntime',
             '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream',
