@@ -43,6 +43,12 @@ task reflectionConfigGenerator(description: 'Generate reflection config', depend
     args = ['hands.on.graalvm.HandsOnGraal', '--output', 'build/reflect.json']
 }
 
+task generateShellCompletion(description: 'Generate shell completion', dependsOn: 'assemble', type: JavaExec) {
+    main = 'picocli.AutoComplete'
+    classpath = sourceSets.main.runtimeClasspath
+    args = ['--force', '--completionScript', 'build/handson_completion.sh', 'hands.on.graalvm.HandsOnGraal']
+}
+
 String getClasspath() {
     'libs/' + file("$buildDir/libs").list()?.join(':libs/')
 }
