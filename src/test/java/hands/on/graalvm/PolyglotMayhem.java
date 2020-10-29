@@ -35,10 +35,9 @@ public class PolyglotMayhem {
     }
 
     private static void helloJavaScript(PolyglotMessage message) {
-        try (Context context = Context.create()) {
-            context.getPolyglotBindings().putMember("message", message);
+        try (Context context = Context.newBuilder().allowAllAccess(true).build()) {
+            context.getBindings("js").putMember("message", message);
             context.eval("js",
-                    "message = Polyglot.import('message');" +
                             "message.invocations++;" +
                             "print(message);");
         }
