@@ -19,10 +19,11 @@ class HandsOnGraal implements Runnable {
     private String message;
 
     @Option(names = "--quiet", description = "No ouput.")
-    boolean quiet = false;
+    private boolean quiet = false;
 
     public static void main(String[] args) {
-        CommandLine.run(new HandsOnGraal(), args);
+        int exitCode = new CommandLine(new HandsOnGraal()).execute(args);
+        System.exit(exitCode);
     }
 
     @Override
