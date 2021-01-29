@@ -94,6 +94,29 @@ Called 5 languages in the same JVM. Polyglot Mayhem!
 Have a look at the class `hands.on.graalvm.PolyglotMayhem` and also the official Graal documentation
 on how to embed and use other languages via the Graal Polyglot API.
 
+On the command line you can also run Ruby or Python scripts using the GraalVM. Make sure to install
+the binaries using the `gu` command.
+
+```
+$ ruby src/test/polyglot/hello-ruby.rb
+$ time ruby src/test/polyglot/hello-ruby.rb
+
+# with GraalVM Ruby
+$ gu install ruby
+$ time $JAVA_HOME/bin/ruby src/test/polyglot/hello-ruby.rb
+
+$ python src/test/polyglot/hello-python.py
+$ time python src/test/polyglot/hello-python.py
+
+$ python3 src/test/polyglot/hello-python.py
+$ time python3 src/test/polyglot/hello-python.py
+
+# with GraalVM Python
+$ gu install python
+$ time $JAVA_HOME/bin/graalpython src/test/polyglot/hello-python.py
+```
+
+
 ## More demos
 
 Make sure to checkout the official _GraalVM_ demo repository with its many examples.
