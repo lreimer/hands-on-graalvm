@@ -11,8 +11,8 @@ done, make sure to install R, Python and Ruby using the Graal updater.
 ```
 # use Jabba to install GraalVM
 jabba remote-ls
-jabba install graalvm-ce-java8@20.1.0
-jabba use graalvm-ce-java8@20.1.0
+jabba install graalvm-ce-java8@20.3.0
+jabba use graalvm-ce-java8@20.2.0
 
 export GRAALVM_HOME=$JAVA_HOME
 
@@ -27,27 +27,17 @@ gu install ruby
 
 The combination of Picocli and GraalVM makes it possible to build cool and slim native
 CLI applications in Java. Have a look at the `hands.on.graalvm.HandsOnGraal` implementation.
-In the Gradle build file, the following 3 dependencies are required.
+In the Gradle build file, the following dependencies are required.
 
 ```groovy
 dependencies {
-    implementation 'info.picocli:picocli:4.5.2'
+    implementation 'info.picocli:picocli:4.6.1'
     implementation 'info.picocli:picocli-jansi-graalvm:1.2.0'
 
-    runtime 'info.picocli:picocli-codegen:4.1.4'
-    runtime 'info.picocli:picocli-shell-jline3:4.1.4'
-}
-```
+    annotationProcessor 'info.picocli:picocli-codegen:4.6.1'
 
-Next, we have to generate the information about reflective access in the CLI application.
-Picocli provides a utility application to do this for us. The following Gradle tasks takes
-care of the generation.
-
-```groovy
-task reflectionConfigGenerator(description: 'Generate reflection config', dependsOn: 'assemble', type: JavaExec) {
-    main = 'picocli.codegen.aot.graalvm.ReflectionConfigGenerator'
-    classpath = sourceSets.main.runtimeClasspath
-    args = ['hands.on.graalvm.HandsOnGraal', '--output', 'build/reflect.json']
+    runtimeOnly 'info.picocli:picocli-codegen:4.6.1'
+    runtimeOnly 'info.picocli:picocli-shell-jline3:4.6.1'
 }
 ```
 
@@ -55,16 +45,30 @@ Once this is done we can use the GraalVM `native-image` command to compile the n
 from the bytecode of our Java CLI application.
 
 ```groovy
-task graalNativeImage(description: 'Generate native image with GraalVM', dependsOn: 'reflectionConfigGenerator', type: Exec) {
+task copyRuntimeLibs(type: Copy) {
+    into "$buildDir/libs"
+    from sourceSets.main.runtimeClasspath
+    include "*.jar"
+}
+
+assemble.finalizedBy copyRuntimeLibs
+
+String getClasspath() {
+    'libs/' + file("$buildDir/libs").list()?.join(':libs/')
+}
+
+task graalNativeImage(description: 'Generate native image with GraalVM', dependsOn: 'build', type: Exec) {
     workingDir "$buildDir"
     commandLine = [
             'native-image',
             '-cp', getClasspath(),
-            '-H:ReflectionConfigurationFiles=reflect.json',
             '-H:+ReportUnsupportedElementsAtRuntime',
-            '--delay-class-initialization-to-runtime=org.fusesource.jansi.WindowsAnsiOutputStream',
+            '-H:+ReportExceptionStackTraces',
+            '-H:+AddAllCharsets',
+            '--initialize-at-run-time=org.fusesource.jansi.WindowsAnsiOutputStream',
             '--no-server',
-            'hands.on.graalvm.HandsOnGraal'
+            'hands.on.graalvm.HandsOnGraal',
+            'hands-on-graal'
     ]
 }
 ```
