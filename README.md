@@ -23,6 +23,53 @@ gu install python
 gu install ruby
 ```
 
+## Polyglot Mayhem
+
+Another power of GraalVM is that you can run multiple languages in the same VM at the same time and
+you can also access each others type system. Polyglot mayhem!
+
+> This is not the same as provided by the Java Scripting API (defined by JSR 223)!
+
+To run this demo simply perform `./gradlew polyglotMayhem`. This will use and call Java, JavaScript,
+R, Ruby and Python all in the same JVM and also pass and modify a single share object. The output of
+this tasks should be something like
+
+```
+> Task :polyglotMayhem
+Hello from Java!
+Hello from JavaScript!
+[1] "Hello from R!"
+Hello from Ruby!
+Hello from Python!
+
+Called 5 languages in the same JVM. Polyglot Mayhem!
+```
+
+Have a look at the class `hands.on.graalvm.PolyglotMayhem` and also the official Graal documentation
+on how to embed and use other languages via the Graal Polyglot API.
+
+On the command line you can also run Ruby or Python scripts using the GraalVM. Make sure to install
+the binaries using the `gu` command.
+
+```
+$ ruby src/test/polyglot/hello-ruby.rb
+$ time ruby src/test/polyglot/hello-ruby.rb
+
+# with GraalVM Ruby
+$ gu install ruby
+$ time $JAVA_HOME/bin/ruby src/test/polyglot/hello-ruby.rb
+
+$ python src/test/polyglot/hello-python.py
+$ time python src/test/polyglot/hello-python.py
+
+$ python3 src/test/polyglot/hello-python.py
+$ time python3 src/test/polyglot/hello-python.py
+
+# with GraalVM Python
+$ gu install python
+$ time $JAVA_HOME/bin/graalpython src/test/polyglot/hello-python.py
+```
+
 ## Native CLIs with _Picocli_ and _GraalVM_
 
 The combination of Picocli and GraalVM makes it possible to build cool and slim native
@@ -71,53 +118,6 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
             'hands-on-graal'
     ]
 }
-```
-
-## Polyglot Mayhem
-
-Another power of GraalVM is that you can run multiple languages in the same VM at the same time and
-you can also access each others type system. Polyglot mayhem!
-
-> This is not the same as provided by the Java Scripting API (defined by JSR 223)!
-
-To run this demo simply perform `./gradlew polyglotMayhem`. This will use and call Java, JavaScript,
-R, Ruby and Python all in the same JVM and also pass and modify a single share object. The output of
-this tasks should be something like
-
-```
-> Task :polyglotMayhem
-Hello from Java!
-Hello from JavaScript!
-[1] "Hello from R!"
-Hello from Ruby!
-Hello from Python!
-
-Called 5 languages in the same JVM. Polyglot Mayhem!
-```
-
-Have a look at the class `hands.on.graalvm.PolyglotMayhem` and also the official Graal documentation
-on how to embed and use other languages via the Graal Polyglot API.
-
-On the command line you can also run Ruby or Python scripts using the GraalVM. Make sure to install
-the binaries using the `gu` command.
-
-```
-$ ruby src/test/polyglot/hello-ruby.rb
-$ time ruby src/test/polyglot/hello-ruby.rb
-
-# with GraalVM Ruby
-$ gu install ruby
-$ time $JAVA_HOME/bin/ruby src/test/polyglot/hello-ruby.rb
-
-$ python src/test/polyglot/hello-python.py
-$ time python src/test/polyglot/hello-python.py
-
-$ python3 src/test/polyglot/hello-python.py
-$ time python3 src/test/polyglot/hello-python.py
-
-# with GraalVM Python
-$ gu install python
-$ time $JAVA_HOME/bin/graalpython src/test/polyglot/hello-python.py
 ```
 
 
