@@ -5,7 +5,7 @@ instructions and commands that I used to create the project.
 
 ## GraalVM installation
 
-I used Jabba as a JVM manager to install GraalVM R14 on my machine. Once this is
+I used Jabba as a JVM manager to install GraalVM on my machine. Once this is
 done, make sure to install R, Python and Ruby using the Graal updater.
 
 ```
